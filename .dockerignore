@@ -1,0 +1,18 @@
+**/.git
+**/.gitignore
+**/node_modules
+**/npm-debug.log
+**/dist
+**/build
+**/*.md
+**/LICENSE
+**/bin
+**/logs
+**/uploads
+**/.vscode
+**/.idea
+**/web
+**/*.test
+**/*.out
+# 保留 docs 目录，因为 Swagger 文档需要它
+# **/docs

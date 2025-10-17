@@ -1,0 +1,127 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  mode: "debug"
+
+logger:
+  level: "info"
+  format: "json"
+  output: "stdout"
+  file_path: "logs/app.log"
+  max_size: 100
+  max_backups: 3
+  max_age: 7
+
+database:
+  driver: "postgres"
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "nova"
+  charset: "utf8"
+  max_idle: 10
+  max_open: 100
+
+auth:
+  jwt_secret: "your-secret-key-change-this-in-production"
+  access_token_duration: 7200      # 2 hours
+  refresh_token_duration: 604800   # 7 days
+  issuer: "nova"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 100
+  min_idle_conns: 10
+  max_retries: 3
+
+ratelimit:
+  enabled: true
+  algorithm: "sliding_window"  # 或 token_bucket
+  ip_limit: 100                # 每个 IP 每分钟最多 100 个请求
+  ip_window: 60
+  user_limit: 1000             # 每个用户每分钟最多 1000 个请求
+  user_window: 60
+
+casbin:
+  model_path: "configs/rbac_model.conf"
+  auto_save: true
+  auto_load: true
+  auto_load_tick: 60  # 每60秒自动加载一次策略（多实例同步）
+
+upload:
+  storage_type: "local"  # 存储类型: local, oss, s3
+  max_size: 10           # 单文件最大大小（MB）
+  allowed_types:         # 允许的 MIME 类型
+    - "image/jpeg"
+    - "image/png"
+    - "image/gif"
+    - "image/webp"
+    - "application/pdf"
+    - "application/msword"
+    - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    - "application/vnd.ms-excel"
+    - "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  allowed_exts:          # 允许的文件扩展名
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".gif"
+    - ".webp"
+    - ".pdf"
+    - ".doc"
+    - ".docx"
+    - ".xls"
+    - ".xlsx"
+  
+  # 本地存储配置
+  local_path: "uploads"                    # 本地存储路径
+  local_url: "http://localhost:8080/uploads"  # 本地访问 URL 前缀
+  
+  # 缩略图配置
+  enable_thumbnail: true
+  thumbnail_width: 200
+  thumbnail_height: 200
+  thumbnail_quality: 80
+  
+  # OSS 配置（阿里云）- 可选
+  # oss_endpoint: "oss-cn-hangzhou.aliyuncs.com"
+  # oss_access_key_id: "your-access-key-id"
+  # oss_access_key_secret: "your-access-key-secret"
+  # oss_bucket_name: "your-bucket-name"
+  # oss_base_path: "uploads"
+  
+  # S3 配置（AWS/MinIO）- 可选
+  # s3_endpoint: "s3.amazonaws.com"
+  # s3_access_key_id: "your-access-key-id"
+  # s3_access_key_secret: "your-access-key-secret"
+  # s3_bucket_name: "your-bucket-name"
+  # s3_region: "us-east-1"
+  # s3_use_ssl: true
+
+queue:
+  enabled: true           # 是否启用队列
+  workers: 3              # Worker 数量
+  max_retry: 3            # 最大重试次数
+  retry_delay: 60         # 重试延迟（秒）
+  redis_prefix: "queue"   # Redis 键前缀
+  poll_interval: 5        # 轮询间隔（秒）
+
+audit_log:
+  enabled: true                           # 是否启用审计日志
+  log_request: true                       # 是否记录请求体
+  log_response: false                     # 是否记录响应体（响应体通常较大，建议关闭）
+  max_body_size: 4096                     # 请求/响应体最大记录大小（字节）
+  exclude_paths:                          # 排除的路径（不记录审计日志）
+    - "/api/v1/health"
+    - "/api/v1/ping"
+    - "/swagger"
+  include_actions: []                     # 只记录指定动作（为空则全部记录）
+  sensitive_fields:                       # 敏感字段（需要脱敏）
+    - "password"
+    - "token"
+    - "secret"
+    - "access_key"

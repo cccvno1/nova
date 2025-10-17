@@ -1,0 +1,108 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  mode: "debug"
+
+logger:
+  level: "debug"
+  format: "json"
+  output: "stdout"
+  file_path: "logs/app.log"
+  max_size: 100
+  max_backups: 3
+  max_age: 7
+
+database:
+  driver: "postgres"
+  host: "postgres"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "nova"
+  charset: "utf8"
+  max_idle: 10
+  max_open: 100
+
+auth:
+  jwt_secret: "test-secret-key-for-development-only"
+  access_token_duration: 7200
+  refresh_token_duration: 604800
+  issuer: "nova"
+
+redis:
+  host: "redis"
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 100
+  min_idle_conns: 10
+  max_retries: 3
+
+ratelimit:
+  enabled: true
+  algorithm: "sliding_window"
+  ip_limit: 100
+  ip_window: 60
+  user_limit: 1000
+  user_window: 60
+
+casbin:
+  model_path: "configs/rbac_model.conf"
+  auto_save: true
+  auto_load: true
+  auto_load_tick: 60
+
+upload:
+  storage_type: "local"
+  max_size: 10
+  allowed_types:
+    - "image/jpeg"
+    - "image/png"
+    - "image/gif"
+    - "image/webp"
+    - "application/pdf"
+    - "application/msword"
+    - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    - "application/vnd.ms-excel"
+    - "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  allowed_exts:
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".gif"
+    - ".webp"
+    - ".pdf"
+    - ".doc"
+    - ".docx"
+    - ".xls"
+    - ".xlsx"
+  local_path: "uploads"
+  local_url: "http://localhost:8080/uploads"
+  enable_thumbnail: true
+  thumbnail_width: 200
+  thumbnail_height: 200
+  thumbnail_quality: 80
+
+queue:
+  enabled: true
+  workers: 3
+  max_retry: 3
+  retry_delay: 60
+  redis_prefix: "queue"
+  poll_interval: 5
+
+audit_log:
+  enabled: true
+  log_request: true
+  log_response: false
+  max_body_size: 4096
+  exclude_paths:
+    - "/api/v1/health"
+    - "/api/v1/ping"
+    - "/swagger"
+  include_actions: []
+  sensitive_fields:
+    - "password"
+    - "token"
+    - "secret"
+    - "access_key"

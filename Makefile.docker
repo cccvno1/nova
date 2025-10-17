@@ -1,0 +1,43 @@
+.PHONY: test-up test-down test-restart test-logs test-clean test-ps test-build
+
+test-up:
+	docker-compose -f docker-compose.test.yml up -d
+
+test-down:
+	docker-compose -f docker-compose.test.yml down
+
+test-restart:
+	docker-compose -f docker-compose.test.yml restart
+
+test-logs:
+	docker-compose -f docker-compose.test.yml logs -f
+
+test-logs-server:
+	docker-compose -f docker-compose.test.yml logs -f nova-server
+
+test-logs-postgres:
+	docker-compose -f docker-compose.test.yml logs -f postgres
+
+test-logs-redis:
+	docker-compose -f docker-compose.test.yml logs -f redis
+
+test-clean:
+	docker-compose -f docker-compose.test.yml down -v
+	docker volume rm nova_postgres_data nova_redis_data 2>/dev/null || true
+
+test-ps:
+	docker-compose -f docker-compose.test.yml ps
+
+test-build:
+	docker-compose -f docker-compose.test.yml build --no-cache
+
+test-rebuild: test-down test-build test-up
+
+test-exec-server:
+	docker exec -it nova-server-test sh
+
+test-exec-postgres:
+	docker exec -it nova-postgres-test psql -U postgres -d nova
+
+test-exec-redis:
+	docker exec -it nova-redis-test redis-cli

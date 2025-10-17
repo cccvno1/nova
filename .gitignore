@@ -1,0 +1,27 @@
+# Go 后端
+logs/
+*.log
+.env
+vendor/
+tmp/
+coverage.out
+
+# 前端
+web/node_modules/
+web/dist/
+web/.env.local
+web/.env.*.local
+
+# 构建产物
+dist/
+build/
+bin/
+
+# IDE
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.iml
